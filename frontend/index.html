@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            color: #263b35;
+        }
+        .dashboard-header {
+            background: #176b52;
+            color: white;
+            padding: 20px 28px;
+        }
+        .brand { display: flex; align-items: center; gap: 14px; }
+        .logo, .login-logo {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #e0f2e9;
+            color: #176b52;
+            font-size: 28px;
+        }
+        .brand h1 { margin: 0 0 6px; font-size: 30px;  color: #e0f2e9;}
+        .brand p { margin: 0; opacity: .9; color: #e0f2e9;}
+        .app-layout {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 22px;
+            max-width: 1450px;
+            margin: 24px auto;
+            padding: 0 20px;
+        }
+        .sidebar {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 12px;
+            height: fit-content;
+            position: sticky;
+            top: 15px;
+            box-shadow: 0 3px 15px #193b3010;
+        }
+        .sidebar h3 { padding: 0 12px; color: #176b52; }
+        .sidebar a, .sidebar button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px;
+            margin: 5px 0;
+            border: 0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #40574e;
+            background: transparent;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .sidebar a:hover, .sidebar button:hover {
+            background: #e7f4ed;
+            color: #176b52;
+        }
+        .dashboard { min-width: 0; }
+        .page-heading { margin: 0 0 20px; }
+        .page-heading h2 { margin: 0 0 7px; }
+        .subtitle { color: #74847c; font-size: 14px; }
+        .login-card, .content-card, .summary-card, .report-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 15px #193b300c;
+        }
+        .login-card { max-width: 420px; margin: 0 auto 22px; }
+        .login-logo { margin: 0 auto 12px; }
+        .login-card h2, .login-card .subtitle { text-align: center; }
+        label { display: block; margin: 12px 0 6px; }
+        input, select {
+            width: 100%;
+            min-width: 0;
+            padding: 11px;
+            border: 1px solid #d6e0da;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+        button {
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 8px;
+            background: #176b52;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover { background: #10543f; }
+        form button { margin-top: 14px; }
+        .login-card form button { width: 100%; }
+        .login-footer { text-align: center; margin-top: 18px; color: #829087; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 0;
+        }
+        .summary-icon {
+            display: grid;
+            place-items: center;
+            width: 43px;
+            height: 43px;
+            border-radius: 10px;
+            background: #e7f4ed;
+            color: #176b52;
+            font-size: 23px;
+        }
+        .summary-card p { margin: 0 0 7px; font-size: 13px; color: #74847c; }
+        .summary-card h2 { margin: 0; font-size: 25px; }
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+        .section-heading h2 { margin: 0 0 6px; }
+        .section-heading p { margin: 0; }
+        .medicine-form {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .medicine-form button { margin-top: 0; }
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; }
+        th, td { text-align: left; padding: 13px 10px; border-bottom: 1px solid #edf1ee; }
+        th { background: #f1f7f3; color: #37584a; font-size: 13px; }
+        td { font-size: 14px; }
+        .edit-btn { background: #537c68; margin-right: 6px; }
+        .delete-btn { background: #b34d4d; }
+        .alert-list { display: grid; gap: 10px; }
+        .alert-item {
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff7e7;
+            border-left: 4px solid #d99a2b;
+        }
+        .alert-item.safe {
+            background: #eaf6ef;
+            border-left-color: #3c9165;
+        }
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+        .bar-row {
+            display: grid;
+            grid-template-columns: 110px minmax(0, 1fr) 35px;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        .bar-track { background: #e9efeb; border-radius: 10px; height: 12px; overflow: hidden; }
+        .bar-fill { background: #368866; height: 100%; width: 0; border-radius: 10px; }
+        .activity-list { padding-left: 20px; color: #53665b; }
+        .activity-list li { margin: 10px 0; }
+        .admin-link { margin: 20px 0; }
+        .admin-link a { color: #176b52; }
+        footer { text-align: center; padding: 20px; color: #74847c; }
+        .hidden { display: none !important; }
+
+        @media (max-width: 1050px) {
+            .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .medicine-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 700px) {
+            .app-layout { grid-template-columns: 1fr; padding: 0 12px; }
+            .sidebar { position: static; }
+            .sidebar nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .summary-grid, .report-grid, .medicine-form { grid-template-columns: 1fr; }
+            .dashboard-header { padding: 18px; }
+            .brand h1 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="dashboard-header">
+    <div class="brand">
+        <div class="logo">✚</div>
+        <div>
+            <h1>Pharmacy Management</h1>
+            <p>Medicine Inventory &amp; Administration</p>
+        </div>
+    </div>
+</header>
+
+<!-- LOGIN -->
+<section class="login-card" id="loginSection">
+    <div class="login-logo">✚</div>
+    <h2>Welcome Back!</h2>
+    <p class="subtitle">Sign in to your Pharmacy Dashboard</p>
+
+    <form id="loginForm">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+
+        <button type="submit">Sign In</button>
+    </form>
+    <p id="loginMessage" role="status"></p>
+    <div class="login-footer">Pharmacy Management System</div>
+</section>
+
+<div class="app-layout" id="appLayout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h3>✚ Pharmacy</h3>
+        <nav>
+            <a href="#overview">▦ Dashboard</a>
+            <a href="#medicineFormSection">＋ Add Medicine</a>
+            <a href="#medicineListSection">▤ Medicine List</a>
+            <a href="#lowStockSection">⚠ Low Stock Alerts</a>
+            <a href="#supplierSection">♙ Suppliers</a>
+            <a href="#salesSection">▥ Sales Report</a>
+            <a href="#expirySection">◷ Expiry Alerts</a>
+            <a href="#activitySection">◴ Recent Activity</a>
+        </nav>
+        <button type="button" id="logoutButton">↪ Logout</button>
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard">
+        <section id="overview">
+            <div class="page-heading">
+                <h2>Dashboard Overview</h2>
+                <p class="subtitle">Monitor your pharmacy inventory and activities.</p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-icon">✚</div>
+                    <div><p>Total Medicines</p><h2 id="totalMedicines">0</h2></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">▤</div>
+                    <div><p>Total Stock Units</p><h2 id="totalStock">0</h2></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">⚠</div>
+                    <div><p>Low Stock Medicines</p><h2 id="lowStockCount">—</h2></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">♙</div>
+                    <div><p>Suppliers</p><h2 id="supplierCount">—</h2></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADD MEDICINE -->
+        <section class="content-card" id="medicineFormSection">
+            <div class="section-heading">
+                <div>
+                    <h2>Add Medicine</h2>
+                    <p class="subtitle">Enter medicine details below</p>
+                </div>
+            </div>
+            <form id="medicineForm" class="medicine-form">
+                <input type="text" id="medicineName" placeholder="Medicine Name" required>
+                <input type="text" id="category" placeholder="Category" required>
+                <input type="text" id="supplier" placeholder="Supplier" required>
+                <input type="number" id="price" placeholder="Price" min="0" step="0.01" required>
+                <input type="number" id="stock" placeholder="Stock Quantity" min="0" step="1" required>
+                <button type="submit">+ Add Medicine</button>
+            </form>
+        </section>
+
+        <!-- MEDICINE LIST -->
+        <section class="content-card" id="medicineListSection">
+            <div class="section-heading">
+                <div>
+                    <h2>Medicine List</h2>
+                    <p class="subtitle">View and manage available medicines</p>
+                </div>
+                <input type="search" id="medicineSearch" placeholder="Search medicines..." style="max-width:280px">
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicine</th><th>Category</th><th>Supplier</th>
+                            <th>Price</th><th>Stock</th><th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medicineTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- LOW STOCK ALERT -->
+        <section class="content-card" id="lowStockSection">
+            <div class="section-heading">
+                <div><h2>Low Stock Alerts</h2><p class="subtitle">Medicines with stock below 10 units</p></div>
+            </div>
+            <div id="lowStockList" class="alert-list">
+                <div class="alert-item safe">Low stock information will appear after medicines load.</div>
+            </div>
+        </section>
+
+        <!-- SUPPLIER INFORMATION -->
+        <section class="content-card" id="supplierSection">
+            <div class="section-heading">
+                <div><h2>Supplier Information</h2><p class="subtitle">Suppliers recorded against medicines</p></div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Supplier</th><th>Medicines Supplied</th></tr></thead>
+                    <tbody id="supplierTableBody">
+                        <tr><td colspan="2">Supplier information will appear after medicines load.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="subtitle">Contact details are not available unless added to the database.</p>
+        </section>
+
+        <!-- SALES REPORT -->
+        <section class="content-card" id="salesSection">
+            <div class="section-heading">
+                <div><h2>Sales Report</h2><p class="subtitle">Sales overview</p></div>
+            </div>
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3>Total Sales</h3>
+                    <p id="totalSales">Not available</p>
+                    <p class="subtitle">A sales database/API is required to calculate actual sales.</p>
+                </div>
+                <div class="report-card">
+                    <h3>Sales Chart</h3>
+                    <div id="salesChart">
+                        <p class="subtitle">Sales chart will display when sales records are connected.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPIRY ALERT -->
+        <section class="content-card" id="expirySection">
+            <div class="section-heading">
+                <div><h2>Medicine Expiry Alert</h2><p class="subtitle">Track medicines approaching expiry</p></div>
+            </div>
+            <div id="expiryList" class="alert-list">
+                <div class="alert-item safe">Expiry alerts require an expiry_date field in the medicine database.</div>
+            </div>
+        </section>
+
+        <!-- RECENT ACTIVITY -->
+        <section class="content-card" id="activitySection">
+            <div class="section-heading">
+                <div><h2>Recent Activity</h2><p class="subtitle">Recent changes during this browser session</p></div>
+            </div>
+            <ul id="recentActivityList" class="activity-list">
+                <li>No recent activity recorded yet.</li>
+            </ul>
+        </section>
+
+        <!-- PHARMACY INFORMATION: IDs retained for script.js -->
+        <section class="content-card pharmacy-info-card">
+            <h2>Pharmacy Information</h2>
+            <p class="subtitle">View additional pharmacy information</p>
+            <button type="button" id="loadInfo">Load Pharmacy Info</button>
+            <div id="pharmacyInfo"></div>
+        </section>
+
+        <div class="admin-link">
+            <a href="admin.html">Open Admin Dashboard →</a>
+        </div>
+    </main>
+</div>
+
+<footer><p>Pharmacy Management System</p></footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="script.js"></script>
+
+<script>
+    // Dashboard-only helpers. Existing script.js CRUD and login IDs remain unchanged.
+    (function () {
+        const token = localStorage.getItem("token");
+        const appLayout = document.getElementById("appLayout");
+        const loginSection = document.getElementById("loginSection");
+
+        if (token) {
+            loginSection.classList.add("hidden");
+        } else {
+            appLayout.classList.add("hidden");
+        }
+
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("username");
+            window.location.href = "index.html";
+        });
+
+        function getCurrentMedicines() {
+            // The main script exposes no public array, so read the visible medicine table.
+            return Array.from(document.querySelectorAll("#medicineTableBody tr"))
+                .filter(row => row.cells.length >= 5)
+                .map(row => ({
+                    name: row.cells[0].textContent.trim(),
+                    category: row.cells[1].textContent.trim(),
+                    supplier: row.cells[2].textContent.trim(),
+                    price: row.cells[3].textContent.trim(),
+                    quantity: Number(row.cells[4].textContent) || 0
+                }));
+        }
+
+        function updateExtraDashboard() {
+            const rows = getCurrentMedicines();
+            const lowStock = rows.filter(item => item.quantity < 10);
+            const suppliers = new Map();
+
+            rows.forEach(item => {
+                if (item.supplier) {
+                    suppliers.set(item.supplier, (suppliers.get(item.supplier) || 0) + 1);
+                }
+            });
+
+            document.getElementById("lowStockCount").textContent = lowStock.length;
+            document.getElementById("supplierCount").textContent = suppliers.size;
+
+            const lowStockList = document.getElementById("lowStockList");
+            lowStockList.replaceChildren();
+
+            if (lowStock.length === 0) {
+                const item = document.createElement("div");
+                item.className = "alert-item safe";
+                item.textContent = "No low-stock medicines found.";
+                lowStockList.appendChild(item);
+            } else {
+                lowStock.forEach(medicine => {
+                    const item = document.createElement("div");
+                    item.className = "alert-item";
+                    item.textContent = medicine.name + " — only " + medicine.quantity + " units left";
+                    lowStockList.appendChild(item);
+                });
+            }
+
+            const supplierBody = document.getElementById("supplierTableBody");
+            supplierBody.replaceChildren();
+
+            if (suppliers.size === 0) {
+                const row = supplierBody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 2;
+                cell.textContent = "No supplier information available.";
+            } else {
+                suppliers.forEach((count, supplier) => {
+                    const row = supplierBody.insertRow();
+                    row.insertCell().textContent = supplier;
+                    row.insertCell().textContent = count;
+                });
+            }
+        }
+
+        // Observe changes to the medicine table after load/add/edit/delete.
+        const tableBody = document.getElementById("medicineTableBody");
+        new MutationObserver(updateExtraDashboard).observe(tableBody, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+
+        updateExtraDashboard();
+
+        // Store lightweight session activity for successful visible table changes.
+        let lastSnapshot = "";
+        const activityList = document.getElementById("recentActivityList");
+
+        function addActivity(message) {
+            const empty = activityList.querySelector("li");
+            if (empty && empty.textContent.includes("No recent activity")) {
+                activityList.replaceChildren();
+            }
+            const item = document.createElement("li");
+            item.textContent = new Date().toLocaleString() + " — " + message;
+            activityList.prepend(item);
+
+            while (activityList.children.length > 8) {
+                activityList.lastElementChild.remove();
+            }
+        }
+
+        function checkActivity() {
+            const rows = getCurrentMedicines();
+            const snapshot = JSON.stringify(rows);
+
+            if (lastSnapshot && snapshot !== lastSnapshot) {
+                addActivity("Medicine list changed.");
+            }
+            lastSnapshot = snapshot;
+        }
+
+        setInterval(checkActivity, 1500);
+    })();
+</script>
+
+</body>
+</html>

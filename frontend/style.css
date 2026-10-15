@@ -1,0 +1,776 @@
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --green: #198754;
+    --dark-green: #176641;
+    --deep-green: #124b30;
+    --light-green: #eaf5ee;
+    --pale-green: #f4f8f5;
+    --text: #24372c;
+    --muted: #738078;
+    --border: #e0e9e3;
+    --white: #ffffff;
+    --red: #b42323;
+    --light-red: #fff0f0;
+    --orange: #b7791f;
+    --light-orange: #fff7e6;
+    --shadow: 0 4px 16px rgba(30, 90, 55, 0.06);
+}
+
+/* 2. BODY */
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 20px;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--pale-green);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--dark-green);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 16px;
+    background: var(--green);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: var(--dark-green);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #d5e0d9;
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--text);
+    font-size: 14px;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #89958d;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #b7e0c7;
+    border-color: var(--green);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 3. HEADER AND BRAND */
+
+.dashboard-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 5%;
+    box-shadow: 0 2px 8px rgba(30, 70, 45, 0.03);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: var(--green);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.brand h1 {
+    font-size: 25px;
+    line-height: 1.3;
+    color: var(--dark-green);
+}
+
+.brand p,
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* 4. GENERAL DASHBOARD */
+
+.dashboard {
+    width: 90%;
+    max-width: 1200px;
+    min-width: 0;
+    margin: 30px auto;
+}
+
+.page-heading {
+    margin-bottom: 25px;
+}
+
+.page-heading h2 {
+    color: var(--dark-green);
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.page-heading .subtitle {
+    margin-top: 4px;
+}
+
+/* 5. LOGIN CARD */
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 25px auto 30px;
+    padding: 30px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(30, 90, 55, 0.08);
+}
+
+.login-logo {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: var(--green);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+}
+
+.login-card h2 {
+    text-align: center;
+    color: var(--dark-green);
+    margin-bottom: 5px;
+}
+
+.login-card > .subtitle {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#loginForm label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#loginForm button {
+    margin-top: 10px;
+    padding: 14px;
+}
+
+#loginMessage {
+    text-align: center;
+    margin-top: 10px;
+    overflow-wrap: anywhere;
+}
+
+.login-footer {
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+    margin-top: 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* 6. ADMIN LAYOUT AND SIDEBAR */
+
+.app-layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 22px;
+    max-width: 1500px;
+    margin: 25px auto;
+    padding: 0 24px;
+    align-items: start;
+}
+
+.sidebar {
+    position: sticky;
+    top: 20px;
+    min-width: 0;
+    background: var(--white);
+    padding: 20px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.sidebar h3 {
+    color: var(--dark-green);
+    font-size: 17px;
+    margin: 0 10px 15px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 11px 12px;
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a:focus {
+    background: var(--light-green);
+    color: var(--dark-green);
+}
+
+.sidebar > button {
+    width: 100%;
+    margin-top: 18px;
+    background: var(--light-red);
+    color: var(--red);
+}
+
+.sidebar > button:hover {
+    background: #fbdede;
+}
+
+.app-layout > .dashboard {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+/* 7. SUMMARY CARDS */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+    padding: 22px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--light-green);
+    color: var(--green);
+    font-size: 25px;
+}
+
+.summary-card p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.summary-card h2 {
+    color: var(--dark-green);
+    font-size: 25px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+/* 8. CONTENT CARDS */
+
+.content-card {
+    min-width: 0;
+    background: var(--white);
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(30, 70, 45, 0.03);
+}
+
+.content-card > h2,
+.section-heading h2,
+.pharmacy-info-card h2 {
+    color: var(--dark-green);
+    font-size: 20px;
+}
+
+.content-card > .subtitle {
+    margin: 5px 0 18px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.section-heading .subtitle {
+    margin-top: 4px;
+}
+
+/* 9. MEDICINE FORM */
+
+.medicine-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 18px;
+}
+
+.medicine-form button {
+    min-height: 44px;
+}
+
+.medicine-form button[type="submit"] {
+    grid-column: 1 / -1;
+}
+
+.medicine-form button[type="button"] {
+    grid-column: 1 / -1;
+}
+
+#addMessage {
+    margin-top: 12px;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+/* 10. SEARCH */
+
+#medicineSearch {
+    max-width: 260px;
+}
+
+#adminSearch {
+    max-width: 280px;
+}
+
+/* 11. TABLES */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 620px;
+    background: var(--white);
+}
+
+th,
+td {
+    padding: 13px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e8eee9;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+th {
+    background: #edf6f0;
+    color: var(--dark-green);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: #f8fbf9;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+td {
+    overflow-wrap: anywhere;
+}
+
+/* 12. EDIT AND DELETE BUTTONS */
+
+.edit-btn {
+    background: #527e68;
+    margin: 2px 5px 2px 0;
+}
+
+.edit-btn:hover {
+    background: #3d654f;
+}
+
+.delete-btn {
+    background: #b94747;
+    margin: 2px 0;
+}
+
+.delete-btn:hover {
+    background: #922e2e;
+}
+
+/* 13. LOW STOCK AND EXPIRY ALERTS */
+
+.alert-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.alert-item {
+    padding: 13px 15px;
+    border-left: 4px solid var(--orange);
+    border-radius: 7px;
+    background: var(--light-orange);
+    color: #76551a;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.alert-item.safe {
+    border-left-color: var(--green);
+    background: var(--light-green);
+    color: var(--dark-green);
+}
+
+/* 14. SUPPLIER INFORMATION */
+
+#supplierTableBody td {
+    overflow-wrap: anywhere;
+}
+
+/* 15. SALES REPORT */
+
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.report-card {
+    min-width: 0;
+    background: #fbfdfb;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.report-card h3 {
+    color: var(--dark-green);
+    font-size: 17px;
+    margin-bottom: 12px;
+}
+
+#totalSales {
+    color: var(--green);
+    font-size: 25px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+#salesChart {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+#salesChart canvas,
+#salesChart svg {
+    max-width: 100%;
+}
+
+/* 16. RECENT ACTIVITY */
+
+.activity-list {
+    padding-left: 22px;
+    margin-top: 12px;
+}
+
+.activity-list li {
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.activity-list li:last-child {
+    border-bottom: none;
+}
+
+/* 17. PHARMACY INFORMATION */
+
+.pharmacy-info-card .subtitle {
+    margin: 5px 0 18px;
+}
+
+#pharmacyInfo {
+    margin-top: 15px;
+    padding: 12px;
+    background: #f7faf8;
+    border-radius: 8px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+/* 18. ADMIN LINKS */
+
+.admin-link {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.admin-link a {
+    color: var(--dark-green);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.admin-link a:hover {
+    text-decoration: underline;
+}
+
+/* 19. FOOTER */
+
+footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 20px;
+    margin-top: 25px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* 20. TABLET RESPONSIVE */
+
+@media (max-width: 1100px) {
+    .app-layout {
+        grid-template-columns: 190px minmax(0, 1fr);
+        gap: 15px;
+        padding: 0 15px;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .content-card {
+        padding: 20px;
+    }
+}
+
+/* 21. MOBILE RESPONSIVE */
+
+@media (max-width: 750px) {
+    .dashboard-header {
+        padding: 17px 5%;
+    }
+
+    .brand h1 {
+        font-size: 21px;
+    }
+
+    .brand p {
+        font-size: 12px;
+    }
+
+    .app-layout {
+        grid-template-columns: 1fr;
+        padding: 0 12px;
+        margin: 15px auto;
+    }
+
+    .sidebar {
+        position: static;
+        padding: 15px;
+    }
+
+    .sidebar nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .sidebar nav a {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .sidebar > button {
+        margin-top: 12px;
+    }
+
+    .dashboard {
+        width: 94%;
+        margin: 20px auto;
+    }
+
+    .app-layout > .dashboard {
+        width: 100%;
+        margin: 0;
+    }
+
+    .page-heading h2 {
+        font-size: 22px;
+    }
+
+    .section-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    #medicineSearch,
+    #adminSearch {
+        max-width: none;
+    }
+
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 22. SMALL MOBILE */
+
+@media (max-width: 500px) {
+    .brand {
+        gap: 10px;
+    }
+
+    .logo {
+        width: 45px;
+        height: 45px;
+        font-size: 27px;
+        border-radius: 11px;
+    }
+
+    .brand h1 {
+        font-size: 18px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .summary-card {
+        padding: 17px;
+    }
+
+    .summary-card h2 {
+        font-size: 23px;
+    }
+
+    .content-card {
+        padding: 18px 14px;
+        margin-bottom: 17px;
+    }
+
+    .medicine-form {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .medicine-form button[type="submit"],
+    .medicine-form button[type="button"] {
+        grid-column: auto;
+    }
+
+    .login-card {
+        padding: 24px 18px;
+    }
+
+    .sidebar nav {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
+/* 23. ACCESSIBILITY */
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+}

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.replace("index.html");
+        }
+    </script>
+</head>
+
+<body>
+
+<header class="dashboard-header">
+    <div class="brand">
+        <div class="logo">✚</div>
+        <div>
+            <h1>Pharmacy Management</h1>
+            <p>Admin Dashboard</p>
+        </div>
+    </div>
+</header>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h3>Navigation</h3>
+
+        <nav>
+            <a href="#overview">🏠 Overview</a>
+            <a href="#medicineFormSection">➕ Add Medicine</a>
+            <a href="#medicineListSection">💊 Medicine List</a>
+            <a href="#lowStockSection">⚠️ Low Stock Alert</a>
+            <a href="#supplierSection">🏢 Suppliers</a>
+            <a href="#salesSection">📊 Sales Report</a>
+            <a href="#expirySection">📅 Expiry Alert</a>
+            <a href="#activitySection">🕒 Recent Activity</a>
+        </nav>
+
+        <button type="button" id="logoutBtn">Logout</button>
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard">
+
+        <section class="page-heading" id="overview">
+            <h2>Welcome to Admin Dashboard</h2>
+            <p class="subtitle">
+                Manage medicines and monitor pharmacy information.
+            </p>
+        </section>
+
+        <!-- STATISTICS -->
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <div class="summary-icon">💊</div>
+                <div>
+                    <p>Total Medicines</p>
+                    <h2 id="adminTotalMedicines">0</h2>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon">📦</div>
+                <div>
+                    <p>Total Stock Units</p>
+                    <h2 id="adminTotalStock">0</h2>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon">⚠️</div>
+                <div>
+                    <p>Low Stock Medicines</p>
+                    <h2 id="lowStockCount">0</h2>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon">🏢</div>
+                <div>
+                    <p>Total Suppliers</p>
+                    <h2 id="supplierCount">0</h2>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ADD / EDIT MEDICINE -->
+        <section class="content-card" id="medicineFormSection">
+            <h2 id="formHeading">Add Medicine</h2>
+            <p class="subtitle">Enter medicine information below.</p>
+
+            <form id="addMedicineForm" class="medicine-form">
+
+                <input
+                    type="text"
+                    id="medicine_name"
+                    placeholder="Medicine Name"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="adminCategory"
+                    placeholder="Category"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="adminSupplier"
+                    name="Supplier Name"
+                    required
+                >
+
+                <input
+                    type="number"
+                    id="quantity"
+                    placeholder="Stock Quantity"
+                    min="0"
+                    step="1"
+                    required
+                >
+
+                <input
+                    type="number"
+                    id="adminPrice"
+                    placeholder="Price"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+                <button type="submit" id="saveMedicineBtn">
+                    Add Medicine
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelEditBtn"
+                    style="display:none; background:#6c757d;"
+                >
+                    Cancel Edit
+                </button>
+
+            </form>
+
+            <p id="addMessage" role="status"></p>
+        </section>
+
+        <!-- MEDICINE LIST -->
+        <section class="content-card" id="medicineListSection">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Medicine List</h2>
+                    <p class="subtitle">View, search and manage medicines.</p>
+                </div>
+
+                <input
+                    type="search"
+                    id="adminSearch"
+                    placeholder="Search medicines..."
+                >
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine Name</th>
+                            <th>Category</th>
+                            <th>Supplier</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="adminMedicineTable"></tbody>
+                </table>
+            </div>
+
+            <button type="button" id="reloadMedicines" style="margin-top:18px;">
+                Refresh List
+            </button>
+        </section>
+
+        <!-- LOW STOCK ALERT -->
+        <section class="content-card" id="lowStockSection">
+            <div class="section-heading">
+                <div>
+                    <h2>⚠️ Low Stock Alert</h2>
+                    <p class="subtitle">
+                        Medicines with 10 or fewer units remaining.
+                    </p>
+                </div>
+            </div>
+
+            <div id="lowStockList" class="alert-list">
+                <p>Loading stock information...</p>
+            </div>
+        </section>
+
+        <!-- SUPPLIER INFORMATION -->
+        <section class="content-card" id="supplierSection">
+            <h2>Supplier Information</h2>
+            <p class="subtitle">
+                Supplier details recorded for each medicine.
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <th>Medicine</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="supplierTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SALES REPORT -->
+        <section class="content-card" id="salesSection">
+            <h2>📊 Sales Report</h2>
+            <p class="subtitle">
+                Sales information and chart.
+            </p>
+
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3>Total Sales</h3>
+                    <p id="totalSales">Not available</p>
+                    <p class="subtitle">
+                        Sales data requires a sales database table.
+                    </p>
+                </div>
+
+                <div class="report-card">
+                    <h3>Sales Chart</h3>
+                    <div id="salesChart">
+                        <p class="subtitle">
+                            A sales chart will be displayed after sales
+                            records and a sales API are connected.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPIRY ALERT -->
+        <section class="content-card" id="expirySection">
+            <h2>📅 Medicine Expiry Alert</h2>
+            <p class="subtitle">
+                Check medicines that are near expiry or expired.
+            </p>
+
+            <div id="expiryList" class="alert-list">
+                <p>
+                    Expiry information is not available yet.
+                    An expiry date field must be stored in the database
+                    and returned by the backend API.
+                </p>
+            </div>
+        </section>
+
+        <!-- RECENT ACTIVITY -->
+        <section class="content-card" id="activitySection">
+            <h2>🕒 Recent Activity</h2>
+            <p class="subtitle">
+                Recent actions recorded in this browser.
+            </p>
+
+            <ul id="recentActivityList" class="activity-list">
+                <li>No recent activity yet.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Pharmacy Management System</p>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+const API = "http://localhost:3000/api/medicines";
+
+let medicines = [];
+let editingId = null;
+
+const form = document.getElementById("addMedicineForm");
+const message = document.getElementById("addMessage");
+const tableBody = document.getElementById("adminMedicineTable");
+
+function getToken() {
+    return localStorage.getItem("token");
+}
+
+function showMessage(text, isError = false) {
+    message.textContent = text;
+    message.style.color = isError ? "#c62828" : "#176641";
+}
+
+function recordActivity(text) {
+    let activities = [];
+
+    try {
+        activities = JSON.parse(
+            sessionStorage.getItem("pharmacyActivities") || "[]"
+        );
+
+        if (!Array.isArray(activities)) activities = [];
+    } catch {
+        activities = [];
+    }
+
+    activities.unshift({
+        text,
+        time: new Date().toLocaleString()
+    });
+
+    activities = activities.slice(0, 10);
+
+    sessionStorage.setItem(
+        "pharmacyActivities",
+        JSON.stringify(activities)
+    );
+
+    renderActivities();
+}
+
+function renderActivities() {
+    const list = document.getElementById("recentActivityList");
+    let activities = [];
+
+    try {
+        activities = JSON.parse(
+            sessionStorage.getItem("pharmacyActivities") || "[]"
+        );
+
+        if (!Array.isArray(activities)) activities = [];
+    } catch {
+        activities = [];
+    }
+
+    list.replaceChildren();
+
+    if (activities.length === 0) {
+        const item = document.createElement("li");
+        item.textContent = "No recent activity yet.";
+        list.appendChild(item);
+        return;
+    }
+
+    activities.forEach(activity => {
+        const item = document.createElement("li");
+        item.textContent = `${activity.text} — ${activity.time}`;
+        list.appendChild(item);
+    });
+}
+
+async function apiRequest(url, options = {}) {
+    const token = getToken();
+
+    if (!token) {
+        window.location.replace("index.html");
+        throw new Error("Please log in again.");
+    }
+
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+            ...(options.headers || {})
+        }
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.replace("index.html");
+        throw new Error("Session expired or access denied.");
+    }
+
+    if (!response.ok) {
+        throw new Error(data.error || data.message || "Request failed.");
+    }
+
+    return data;
+}
+
+// LOAD MEDICINES
+async function loadMedicines() {
+    tableBody.replaceChildren();
+
+    try {
+        const data = await apiRequest(API);
+
+        medicines = Array.isArray(data)
+            ? data
+            : (Array.isArray(data.medicines) ? data.medicines : []);
+
+        renderMedicines();
+        updateSummary();
+        renderLowStock();
+        renderSuppliers();
+        renderExpiryAlerts();
+
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+}
+
+// RENDER MEDICINE TABLE
+function renderMedicines() {
+    const searchText = document.getElementById("adminSearch")
+        .value.trim().toLowerCase();
+
+    tableBody.replaceChildren();
+
+    const filtered = medicines.filter(item =>
+        String(item.medicine_name || "").toLowerCase().includes(searchText) ||
+        String(item.category || "").toLowerCase().includes(searchText) ||
+        String(item.supplier || "").toLowerCase().includes(searchText)
+    );
+
+    filtered.forEach(item => {
+        const row = document.createElement("tr");
+
+        [
+            item.medicine_id,
+            item.medicine_name,
+            item.category,
+            item.supplier || "Not recorded",
+            item.quantity,
+            Number(item.price || 0).toFixed(2)
+        ].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value ?? "";
+            row.appendChild(cell);
+        });
+
+        const actionCell = document.createElement("td");
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.textContent = "Edit";
+        editButton.className = "edit-btn";
+        editButton.addEventListener("click", () => startEdit(item));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete-btn";
+        deleteButton.addEventListener("click", () =>
+            deleteMedicine(item.medicine_id)
+        );
+
+        actionCell.append(editButton, deleteButton);
+        row.appendChild(actionCell);
+        tableBody.appendChild(row);
+    });
+
+    if (filtered.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 7;
+        cell.textContent = "No medicines found.";
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+    }
+}
+
+// DASHBOARD STATISTICS
+function updateSummary() {
+    document.getElementById("adminTotalMedicines").textContent =
+        medicines.length;
+
+    const stockTotal = medicines.reduce(
+        (total, item) => total + (Number(item.quantity) || 0),
+        0
+    );
+
+    document.getElementById("adminTotalStock").textContent = stockTotal;
+
+    const lowStock = medicines.filter(item =>
+        Number(item.quantity) <= 10
+    );
+
+    document.getElementById("lowStockCount").textContent =
+        lowStock.length;
+
+    const suppliers = new Set(
+        medicines
+            .map(item => String(item.supplier || "").trim().toLowerCase())
+            .filter(Boolean)
+    );
+
+    document.getElementById("supplierCount").textContent =
+        suppliers.size;
+}
+
+// LOW STOCK ALERT
+function renderLowStock() {
+    const container = document.getElementById("lowStockList");
+    container.replaceChildren();
+
+    const lowStock = medicines.filter(item =>
+        Number(item.quantity) <= 10
+    );
+
+    if (lowStock.length === 0) {
+        const item = document.createElement("p");
+        item.className = "alert-item safe";
+        item.textContent = "No low-stock medicines.";
+        container.appendChild(item);
+        return;
+    }
+
+    lowStock.forEach(medicine => {
+        const item = document.createElement("div");
+        item.className = "alert-item";
+        item.textContent =
+            `${medicine.medicine_name}: ${medicine.quantity} units remaining`;
+        container.appendChild(item);
+    });
+}
+
+// SUPPLIER INFORMATION
+function renderSuppliers() {
+    const body = document.getElementById("supplierTableBody");
+    body.replaceChildren();
+
+    const suppliedMedicines = medicines.filter(item =>
+        String(item.supplier || "").trim()
+    );
+
+    if (suppliedMedicines.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 3;
+        cell.textContent = "No supplier information recorded.";
+        row.appendChild(cell);
+        body.appendChild(row);
+        return;
+    }
+
+    suppliedMedicines.forEach(medicine => {
+        const row = document.createElement("tr");
+
+        [
+            medicine.supplier,
+            medicine.medicine_name,
+            medicine.category
+        ].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value || "";
+            row.appendChild(cell);
+        });
+
+        body.appendChild(row);
+    });
+}
+
+// EXPIRY ALERT
+function renderExpiryAlerts() {
+    const container = document.getElementById("expiryList");
+    container.replaceChildren();
+
+    const datedMedicines = medicines.filter(item =>
+        item.expiry_date || item.expiryDate
+    );
+
+    if (datedMedicines.length === 0) {
+        const item = document.createElement("p");
+        item.textContent =
+            "Expiry dates are not available in the medicine records yet.";
+        container.appendChild(item);
+        return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    datedMedicines.forEach(medicine => {
+        const expiryValue = medicine.expiry_date || medicine.expiryDate;
+        const expiry = new Date(expiryValue);
+        const item = document.createElement("div");
+
+        if (Number.isNaN(expiry.getTime())) return;
+
+        expiry.setHours(0, 0, 0, 0);
+
+        const daysLeft = Math.ceil(
+            (expiry - today) / (1000 * 60 * 60 * 24)
+        );
+
+        if (daysLeft < 0) {
+            item.className = "alert-item";
+            item.textContent =
+                `${medicine.medicine_name}: Expired on ${expiryValue}`;
+            container.appendChild(item);
+        } else if (daysLeft <= 30) {
+            item.className = "alert-item";
+            item.textContent =
+                `${medicine.medicine_name}: Expires in ${daysLeft} day(s)`;
+            container.appendChild(item);
+        }
+    });
+
+    if (container.children.length === 0) {
+        const item = document.createElement("p");
+        item.className = "alert-item safe";
+        item.textContent = "No medicines are near expiry.";
+        container.appendChild(item);
+    }
+}
+
+// EDIT MEDICINE
+function startEdit(item) {
+    editingId = item.medicine_id;
+
+    document.getElementById("medicine_name").value =
+        item.medicine_name ?? "";
+
+    document.getElementById("adminCategory").value =
+        item.category ?? "";
+
+    document.getElementById("adminSupplier").value =
+        item.supplier ?? "";
+
+    document.getElementById("quantity").value =
+        item.quantity ?? 0;
+
+    document.getElementById("adminPrice").value =
+        item.price ?? 0;
+
+    document.getElementById("formHeading").textContent = "Edit Medicine";
+    document.getElementById("saveMedicineBtn").textContent = "Update Medicine";
+    document.getElementById("cancelEditBtn").style.display = "inline-block";
+
+    document.getElementById("medicineFormSection").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+function resetForm() {
+    editingId = null;
+    form.reset();
+
+    document.getElementById("formHeading").textContent = "Add Medicine";
+    document.getElementById("saveMedicineBtn").textContent = "Add Medicine";
+    document.getElementById("cancelEditBtn").style.display = "none";
+}
+
+// ADD / UPDATE MEDICINE
+form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const name = document.getElementById("medicine_name").value.trim();
+    const category = document.getElementById("adminCategory").value.trim();
+    const supplier = document.getElementById("adminSupplier").value.trim();
+    const quantityValue = document.getElementById("quantity").value;
+    const priceValue = document.getElementById("adminPrice").value;
+
+    const quantity = Number(quantityValue);
+    const price = Number(priceValue);
+
+    if (
+        !name ||
+        !category ||
+        !supplier ||
+        quantityValue === "" ||
+        priceValue === "" ||
+        !Number.isInteger(quantity) ||
+        quantity < 0 ||
+        !Number.isFinite(price) ||
+        price < 0
+    ) {
+        showMessage("Please enter valid details in all fields.", true);
+        return;
+    }
+
+    const payload = {
+        medicine_name: name,
+        category,
+        supplier,
+        quantity,
+        price
+    };
+
+    const submitButton = document.getElementById("saveMedicineBtn");
+
+    try {
+        submitButton.disabled = true;
+
+        if (editingId !== null) {
+            await apiRequest(`${API}/${editingId}`, {
+                method: "PUT",
+                body: JSON.stringify(payload)
+            });
+
+            showMessage("Medicine updated successfully.");
+            recordActivity(`Updated medicine: ${name}`);
+        } else {
+            await apiRequest(API, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+
+            showMessage("Medicine added successfully.");
+            recordActivity(`Added medicine: ${name}`);
+        }
+
+        resetForm();
+        await loadMedicines();
+
+    } catch (error) {
+        showMessage(error.message, true);
+    } finally {
+        submitButton.disabled = false;
+    }
+});
+
+// DELETE MEDICINE
+async function deleteMedicine(id) {
+    const medicine = medicines.find(item =>
+        Number(item.medicine_id) === Number(id)
+    );
+
+    if (!confirm("Are you sure you want to delete this medicine?")) {
+        return;
+    }
+
+    try {
+        await apiRequest(`${API}/${id}`, { method: "DELETE" });
+
+        showMessage("Medicine deleted successfully.");
+
+        recordActivity(
+            `Deleted medicine: ${medicine?.medicine_name || id}`
+        );
+
+        if (Number(editingId) === Number(id)) {
+            resetForm();
+        }
+
+        await loadMedicines();
+
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+}
+
+// BUTTONS AND SEARCH
+document.getElementById("cancelEditBtn")
+    .addEventListener("click", resetForm);
+
+document.getElementById("reloadMedicines")
+    .addEventListener("click", loadMedicines);
+
+document.getElementById("adminSearch")
+    .addEventListener("input", renderMedicines);
+
+// LOGOUT
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    if (!confirm("Are you sure you want to logout?")) return;
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
+
+    window.location.replace("index.html");
+});
+
+// INITIAL LOAD
+renderActivities();
+loadMedicines();
+</script>
+
+</body>
+</html>
